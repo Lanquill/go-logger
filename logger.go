@@ -21,19 +21,19 @@ var logger *zap.Logger
 
 // Get initializes a zap.Logger instance if it has not been initialized
 // already and returns the same instance for subsequent calls.
-func Get() *zap.Logger {
+func Get(logPath, logLevel string) *zap.Logger {
 	once.Do(func() {
 		stdout := zapcore.AddSync(os.Stdout)
 
 		file := zapcore.AddSync(&lumberjack.Logger{
-			Filename:   os.Getenv("LOG_PATH"),
+			Filename:   logPath,
 			MaxSize:    3,    // log size 3MB
 			MaxBackups: 30,   // Keeps last 30 log files
 			Compress:   true, // Compress old logs
 		})
 
 		level := zap.InfoLevel
-		levelEnv := os.Getenv("LOG_LEVEL")
+		levelEnv := logLevel
 		if levelEnv != "" {
 			levelFromEnv, err := zapcore.ParseLevel(levelEnv)
 			if err != nil {
