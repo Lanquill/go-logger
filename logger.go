@@ -119,3 +119,13 @@ func WithCtx(ctx context.Context, l *zap.Logger) context.Context {
 
 	return context.WithValue(ctx, ctxKey{}, l)
 }
+
+func GetContextLogger(ctx context.Context) (context.Context, *zap.Logger) {
+	log := FromCtx(ctx)
+	context := WithCtx(ctx, log)
+	return context, log
+}
+
+func LogUserId(ctx context.Context) zapcore.Field {
+	return zap.Any("user_id", ctx.Value("userId"))
+}
